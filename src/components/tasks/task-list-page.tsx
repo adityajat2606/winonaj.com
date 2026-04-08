@@ -26,7 +26,8 @@ const taskIcons: Record<TaskKey, any> = {
 const variantShells = {
   'listing-directory': 'bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.08),transparent_24%),linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)]',
   'listing-showcase': 'bg-[linear-gradient(180deg,#ffffff_0%,#f4f9ff_100%)]',
-  'article-editorial': 'bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.08),transparent_20%),linear-gradient(180deg,#fff8ef_0%,#ffffff_100%)]',
+  'article-editorial':
+    'bg-[radial-gradient(circle_at_12%_0%,rgba(148,243,228,0.28),transparent_38%),linear-gradient(180deg,#e8f5f2_0%,#f4fbfa_100%)]',
   'article-journal': 'bg-[linear-gradient(180deg,#fffdf9_0%,#f7f1ea_100%)]',
   'image-masonry': 'bg-[linear-gradient(180deg,#09101d_0%,#111c2f_100%)] text-white',
   'image-portfolio': 'bg-[linear-gradient(180deg,#07111f_0%,#13203a_100%)] text-white',
@@ -66,11 +67,11 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
       }
     : layoutKey.startsWith('article') || layoutKey.startsWith('sbm')
       ? {
-          muted: 'text-[#72594a]',
-          panel: 'border border-[#dbc6b6] bg-white/90',
-          soft: 'border border-[#dbc6b6] bg-[#fff8ef]',
-          input: 'border border-[#dbc6b6] bg-white text-[#2f1d16]',
-          button: 'bg-[#2f1d16] text-[#fff4e4] hover:bg-[#452920]',
+          muted: 'text-[#4a5c5f]',
+          panel: 'border border-[#333F44]/15 bg-white/95 shadow-[0_18px_48px_rgba(26,26,27,0.06)]',
+          soft: 'border border-[#333F44]/12 bg-[#ecf7f4]/90',
+          input: 'border border-[#333F44]/20 bg-white text-[#1A1A1B]',
+          button: 'bg-[#1A1A1B] text-[#94F3E4] hover:bg-[#333F44]',
         }
       : {
           muted: 'text-slate-600',
@@ -146,7 +147,9 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
             <div>
               <p className={`text-xs uppercase tracking-[0.3em] ${ui.muted}`}>{taskConfig?.label || task}</p>
               <h1 className="mt-3 max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-foreground">{taskConfig?.description || 'Latest posts'}</h1>
-              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>This reading surface uses slower pacing, stronger typographic hierarchy, and more breathing room so long-form content feels intentional rather than squeezed into a generic feed.</p>
+              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>
+                Browse by category, open a story, and read with the same editorial spacing and type hierarchy as the homepage — built for focus, not endless scrolling.
+              </p>
             </div>
             <div className={`rounded-[2rem] p-6 ${ui.panel}`}>
               <p className={`text-xs font-semibold uppercase tracking-[0.24em] ${ui.muted}`}>Reading note</p>
