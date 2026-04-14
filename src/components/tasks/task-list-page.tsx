@@ -36,6 +36,10 @@ const variantShells = {
   'classified-market': 'bg-[linear-gradient(180deg,#f4f6ef_0%,#ffffff_100%)]',
   'sbm-curation': 'bg-[linear-gradient(180deg,#fff7ee_0%,#ffffff_100%)]',
   'sbm-library': 'bg-[linear-gradient(180deg,#f7f8fc_0%,#ffffff_100%)]',
+  'org-editorial':
+    'bg-[radial-gradient(circle_at_top_left,rgba(197,160,89,0.14),transparent_26%),linear-gradient(180deg,#fff9f2_0%,#fbf6ee_100%)]',
+  'comment-editorial':
+    'bg-[radial-gradient(circle_at_top_right,rgba(197,160,89,0.1),transparent_28%),linear-gradient(180deg,#fffdf9_0%,#fbf6ee_100%)]',
 } as const
 
 export async function TaskListPage({ task, category }: { task: TaskKey; category?: string }) {
@@ -56,6 +60,11 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
   const Icon = taskIcons[task] || LayoutGrid
 
   const isDark = ['image-masonry', 'image-portfolio', 'profile-creator'].includes(layoutKey)
+  const warmEditorialUi =
+    layoutKey.startsWith('article') ||
+    layoutKey.startsWith('sbm') ||
+    layoutKey === 'org-editorial' ||
+    layoutKey === 'comment-editorial'
   const ui = isDark
     ? {
         muted: 'text-slate-300',
@@ -64,7 +73,7 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
         input: 'border-white/10 bg-white/6 text-white',
         button: 'bg-white text-slate-950 hover:bg-slate-200',
       }
-    : layoutKey.startsWith('article') || layoutKey.startsWith('sbm')
+    : warmEditorialUi
       ? {
           muted: 'text-[#72594a]',
           panel: 'border border-[#dbc6b6] bg-white/90',
@@ -146,11 +155,82 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
             <div>
               <p className={`text-xs uppercase tracking-[0.3em] ${ui.muted}`}>{taskConfig?.label || task}</p>
               <h1 className="mt-3 max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-foreground">{taskConfig?.description || 'Latest posts'}</h1>
-              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>This reading surface uses slower pacing, stronger typographic hierarchy, and more breathing room so long-form content feels intentional rather than squeezed into a generic feed.</p>
+              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>
+                Long-form essays and briefings from {SITE_CONFIG.name}: calm pacing, generous margins, and typography that lets each story breathe—closer to a print supplement than a noisy timeline.
+              </p>
             </div>
             <div className={`rounded-[2rem] p-6 ${ui.panel}`}>
-              <p className={`text-xs font-semibold uppercase tracking-[0.24em] ${ui.muted}`}>Reading note</p>
-              <p className={`mt-4 text-sm leading-7 ${ui.muted}`}>Use category filters to jump between topics without collapsing the page into the same repeated card rhythm used by other task types.</p>
+              <p className={`text-xs font-semibold uppercase tracking-[0.24em] ${ui.muted}`}>From the editor&apos;s desk</p>
+              <p className={`mt-4 text-sm leading-7 ${ui.muted}`}>
+                Filter by category to move between markets, culture, and house notes. Every list view keeps the same editorial frame so reading stays consistent end to end.
+              </p>
+              <form className="mt-5 flex items-center gap-3" action={taskConfig?.route || '#'}>
+                <select name="category" defaultValue={normalizedCategory} className={`h-11 flex-1 rounded-xl px-3 text-sm ${ui.input}`}>
+                  <option value="all">All categories</option>
+                  {CATEGORY_OPTIONS.map((item) => (
+                    <option key={item.slug} value={item.slug}>{item.name}</option>
+                  ))}
+                </select>
+                <button type="submit" className={`h-11 rounded-xl px-4 text-sm font-medium ${ui.button}`}>Apply</button>
+              </form>
+            </div>
+          </section>
+        ) : null}
+
+        {layoutKey === 'org-editorial' ? (
+          <section className="mb-12 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#dcc8b7] bg-[#fffdfa] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6e5547]">
+                People of {SITE_CONFIG.name}
+              </span>
+              <h1 className="mt-5 max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-foreground">The editors, strategists, and makers behind the masthead.</h1>
+              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>
+                We are a compact studio team obsessed with clarity: research-led writing, disciplined art direction, and partnerships that respect the reader&apos;s time.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link href="/careers" className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${ui.button}`}>
+                  View open roles
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link href="/about" className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${ui.soft}`}>
+                  Our story
+                </Link>
+              </div>
+            </div>
+            <div className={`grid gap-4 rounded-[2rem] p-6 ${ui.panel}`}>
+              <p className={`text-xs font-semibold uppercase tracking-[0.24em] ${ui.muted}`}>Studio rhythm</p>
+              <ul className={`space-y-3 text-sm leading-7 ${ui.muted}`}>
+                <li className="border-b border-black/5 pb-3">Small senior pods—editorial, brand, and product—working as one circle.</li>
+                <li className="border-b border-black/5 pb-3">Weekly critique of layout, voice, and sourcing standards.</li>
+                <li>Remote-friendly with seasonal in-person editorial summits.</li>
+              </ul>
+              <form className="mt-2 flex items-center gap-3 border-t border-black/5 pt-5" action={taskConfig?.route || '#'}>
+                <select name="category" defaultValue={normalizedCategory} className={`h-11 flex-1 rounded-xl px-3 text-sm ${ui.input}`}>
+                  <option value="all">All categories</option>
+                  {CATEGORY_OPTIONS.map((item) => (
+                    <option key={item.slug} value={item.slug}>{item.name}</option>
+                  ))}
+                </select>
+                <button type="submit" className={`h-11 rounded-xl px-4 text-sm font-medium ${ui.button}`}>Apply</button>
+              </form>
+            </div>
+          </section>
+        ) : null}
+
+        {layoutKey === 'comment-editorial' ? (
+          <section className="mb-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#dcc8b7] bg-[#fffdfa] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6e5547]">
+                House blog
+              </span>
+              <h1 className="mt-5 max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-foreground">Notes, announcements, and behind-the-scenes dispatches.</h1>
+              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>
+                Shorter posts than our flagship articles—product updates, event recaps, and guest conversations—still held to the same tonal guardrails and visual system.
+              </p>
+            </div>
+            <div className={`rounded-[2rem] p-6 ${ui.panel}`}>
+              <p className={`text-xs font-semibold uppercase tracking-[0.24em] ${ui.muted}`}>Browse</p>
+              <p className={`mt-4 text-sm leading-7 ${ui.muted}`}>Use categories to separate press moments, essays, and changelog-style entries without losing the editorial frame.</p>
               <form className="mt-5 flex items-center gap-3" action={taskConfig?.route || '#'}>
                 <select name="category" defaultValue={normalizedCategory} className={`h-11 flex-1 rounded-xl px-3 text-sm ${ui.input}`}>
                   <option value="all">All categories</option>
